@@ -74,8 +74,8 @@ function cardSelection() {
     cardsArray.map((item) => {
         item.addEventListener("click", ()=>{
             if (cardVerification.length <= 2) {
-                item.querySelector('.front-face').style.transform = 'rotateY(-180deg)';
-                item.querySelector('.back-face').style.transform = 'rotateY(0deg)';
+                item.querySelector('.front-face').classList.add('front-face-turn');
+                item.querySelector('.back-face').classList.add('back-face-turn');
 
                 let cardKey = item.getAttribute('card-id');
                 cardVerification.push(cardKey);
@@ -83,12 +83,28 @@ function cardSelection() {
                 if (cardVerification.length === 2) {
                     if(cardVerification[0] === cardVerification[1]) {
                         console.log('Acertou');
+                        document.querySelector('.front-face-turn').classList.replace('front-face-turn','match-front');
+                        document.querySelector('.back-face-turn').classList.replace('back-face-turn', 'match-back');
+                        
+                        document.querySelector('.front-face-turn').classList.replace('front-face-turn','match-front');
+                        document.querySelector('.back-face-turn').classList.replace('back-face-turn', 'match-back');
+
                         cardVerification.splice(0,2);
                         
                     } else {
-                        console.log('Errou');
-                        cardVerification.splice(0,2);
+                        setTimeout(()=>{
+                            document.querySelector('.front-face-turn').classList.remove('front-face-turn');
+                            document.querySelector('.back-face-turn').classList.remove('back-face-turn');
+                            
+                            document.querySelector('.front-face-turn').classList.remove('front-face-turn');
+                            document.querySelector('.back-face-turn').classList.remove('back-face-turn');
+    
+                            console.log('Errou');
+                            cardVerification.splice(0,2);
+                        }, 1000);
 
+
+                        
 
                     }
                 }

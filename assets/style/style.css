@@ -52,9 +52,9 @@ button {
     position: relative;
     margin-right: 34px;
     margin-bottom: 34px;
-  }
+}
 
-  .face {
+.face {
     width: 100%;
     height: 100%;
     background-color: #A7E9AF;
@@ -67,25 +67,27 @@ button {
     backface-visibility: hidden;
     transition: all .5s;
     transform-style: preserve-3d;
-  }
+}
 
-  .face img {
-      width: 100px;
-  }
+.face img {
+    width: 100px;
+}
 
-  .back-face {
+.back-face {
     transform: rotateY(180deg);
-  }
+}
 
-  /* .card:hover .back-face {
+.back-face-turn,
+.match-back {
     transform: rotateY(0deg);
-  } */
+} 
 
-  /* .card:hover .front-face {
+.front-face-turn,
+.match-front {
     transform: rotateY(-180deg);
-  } */
+} 
 
 
-  .no-display {
-      display: none;
-  }
+.no-display {
+    display: none;
+}
