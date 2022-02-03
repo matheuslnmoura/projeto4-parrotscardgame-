@@ -119,6 +119,14 @@ button {
 }
 
 
+@media (max-width: 400px) {
+    section {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+
 
 
 .no-display {

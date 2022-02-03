@@ -11,6 +11,8 @@ let correctCards = 0;
 let wrongCards = 0;
 let clock = null;
 let timerInterval = null;
+let gameEndTimeEnglish = null;
+let gameEndTimePortuguese = null;
 
 document.querySelector('.start-button').addEventListener('click', startGame);
 
@@ -24,13 +26,15 @@ function startGame() {
     wrongCards = 0;
     clock = null;
     timerInterval = null;
+    gameEndTimeEnglish = null;
+    gameEndTimePortuguese = null;
 
     document.querySelector('section').innerHTML = "";
     document.querySelector('.start-button').classList.add('no-display');
     document.querySelector('.clock').classList.remove('no-display');
 
     askNumberOfCards();
-    timer();
+    
 }
 
 function askNumberOfCards() {
@@ -70,11 +74,17 @@ function comparator() {
 }
 
 function createInterface() {
+    timer();
 
     gameArray.map((item) => {
         let card = document.querySelector('.card').cloneNode(true);
 
-        card.setAttribute('card-id', item.id)
+        card.setAttribute('card-id', item.id);
+
+        card.setAttribute('data-identifier', 'card');
+        card.querySelector('.front-face').setAttribute('data-identifier','front-face');
+        card.querySelector('.back-face').setAttribute('data-identifier','back-face');
+
         card.querySelector('.back-face img').src = item.backImg;
         card.querySelector('.back-face img').alt = item.alt;
 
@@ -84,6 +94,7 @@ function createInterface() {
 
     cardsArray = Array.from(document.querySelectorAll('section .card'));
 
+    
     cardSelection();
 
 }
@@ -141,7 +152,7 @@ function cardSelection() {
                 }
 
                 if (correctCards === (gameArray.length)/2) {
-                    setTimeout(gameEnd, 1500);
+                    setTimeout(gameEnd, 500);
                     
                 }
             }    
@@ -154,17 +165,17 @@ function blockClicks() {
     document.querySelector('.block-clicks').classList.remove('no-display');
     setTimeout(() => {
         document.querySelector('.block-clicks').classList.add('no-display');
-    }, 1500);
+    }, 1000);
 }
 
 
 function gameEnd() {
     alert(`
     EN: Congratulations! 
-        You won with ${correctCards + wrongCards} moves in ${clock}
+        You won with ${correctCards + wrongCards} moves in ${gameEndTimeEnglish}
 
     PORT: Parabéns!
-        Você ganhou com ${correctCards + wrongCards} jogadas em ${clock}
+        Você ganhou com ${correctCards + wrongCards} jogadas em ${gameEndTimePortuguese}
 
     `);
 
@@ -181,10 +192,10 @@ function newGame() {
         Digite "sim" ou "não"
     `)
 
-    if (newGameAnswer === 'yes' || newGameAnswer === 'sim') {
+    if (newGameAnswer === 'yes' || newGameAnswer === 'sim' || newGameAnswer === 's') {
         startGame();
 
-    } else if (newGameAnswer === 'no' || newGameAnswer ==='não') {
+    } else if (newGameAnswer === 'no' || newGameAnswer ==='não' || newGameAnswer ==='nao' || newGameAnswer ==='n') {
         document.location.reload(true);
     } else {
         alert(`
@@ -220,6 +231,10 @@ function timer() {
         clock = (hh < 10 ? `0${hh}` : hh) + ':' + (mm < 10 ? `0${mm}` : mm) + ':' + (ss < 10 ? `0${ss}` : ss);
 
         timer.innerHTML = clock;
+
+        gameEndTimeEnglish = (hh < 1 ? '' : (hh !== 1 ? `${hh} hours and ` : `${hh} hour and `)) + (mm < 1  ? '' : (mm !== 1 ? `${mm} minutes and ` : `${mm} minute and `)) + (ss < 1 ? '' : (ss !== 1 ? `${ss} seconds.` : `${ss} second.`));    
+
+        gameEndTimePortuguese = (hh < 1 ? '' : (hh !== 1 ? `${hh} horas e ` : `${hh} hora e `)) +(mm < 1 ? '' : (mm !== 1 ? `${mm} minutos e ` : `${mm} minuto e `)) + (ss < 1 ? '' : (ss !== 1 ? `${ss} segundos.` : `${ss} segundo.`)); 
 
     }, 1000);
 }
