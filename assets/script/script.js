@@ -7,11 +7,31 @@ let gameArray = [];
 let cardsArray= [];
 let turnedCards = 0;
 let cardVerification = [];
+let correctCards = 0;
+let wrongCards = 0;
+let clock = null;
+let timerInterval = null;
 
-document.querySelector('.start-button').addEventListener('click',()=>{
+document.querySelector('.start-button').addEventListener('click', startGame);
+
+function startGame() {
+    numberOfCards = null; 
+    gameArray = [];
+    cardsArray= [];
+    turnedCards = 0;
+    cardVerification = [];
+    correctCards = 0;
+    wrongCards = 0;
+    clock = null;
+    timerInterval = null;
+
+    document.querySelector('section').innerHTML = "";
     document.querySelector('.start-button').classList.add('no-display');
+    document.querySelector('.clock').classList.remove('no-display');
+
     askNumberOfCards();
-});
+    timer();
+}
 
 function askNumberOfCards() {
       
@@ -73,49 +93,136 @@ function createInterface() {
 function cardSelection() {
     cardsArray.map((item) => {
         item.addEventListener("click", ()=>{
-            if (cardVerification.length <= 2) {
-                item.querySelector('.front-face').classList.add('front-face-turn');
-                item.querySelector('.back-face').classList.add('back-face-turn');
+            if(item.querySelector('.front-face').classList.contains('match-front') === false){
+                if (cardVerification.length < 2) {
+                    item.querySelector('.front-face').classList.add('front-face-turn');
+                    item.querySelector('.back-face').classList.add('back-face-turn');
 
-                let cardKey = item.getAttribute('card-id');
-                cardVerification.push(cardKey);
+                    let cardKey = item.getAttribute('card-id');
+                    cardVerification.push(cardKey);
 
-                if (cardVerification.length === 2) {
-                    if(cardVerification[0] === cardVerification[1]) {
-                        console.log('Acertou');
-                        document.querySelector('.front-face-turn').classList.replace('front-face-turn','match-front');
-                        document.querySelector('.back-face-turn').classList.replace('back-face-turn', 'match-back');
-                        
-                        document.querySelector('.front-face-turn').classList.replace('front-face-turn','match-front');
-                        document.querySelector('.back-face-turn').classList.replace('back-face-turn', 'match-back');
-
-                        cardVerification.splice(0,2);
-                        
-                    } else {
-                        setTimeout(()=>{
-                            document.querySelector('.front-face-turn').classList.remove('front-face-turn');
-                            document.querySelector('.back-face-turn').classList.remove('back-face-turn');
+                    if (cardVerification.length === 2) {
+                        blockClicks();
+                        if(cardVerification[0] === cardVerification[1]) {
+                            correctCards++;
+                            document.querySelector('.front-face-turn').classList.replace('front-face-turn','match-front');
+                            document.querySelector('.back-face-turn').classList.replace('back-face-turn', 'match-back');
                             
-                            document.querySelector('.front-face-turn').classList.remove('front-face-turn');
-                            document.querySelector('.back-face-turn').classList.remove('back-face-turn');
-    
-                            console.log('Errou');
+                            if(document.querySelector('.front-face-turn') !== null){
+                                document.querySelector('.front-face-turn').classList.replace('front-face-turn','match-front');
+                                document.querySelector('.back-face-turn').classList.replace('back-face-turn', 'match-back');
+                            } else {
+                                item.querySelector('.match-front').classList.toggle('match-front');
+                                item.querySelector('.match-back').classList.toggle('match-back');
+                                correctCards--;
+                            }
+                            console.log('Cartas Corretas ' + correctCards)
                             cardVerification.splice(0,2);
-                        }, 1000);
-
-
-                        
-
+                            
+                        } else { 
+                            cardVerification.splice(0,2);
+                            wrongCards++;
+                            console.log('Jogadas Erradas ' + wrongCards);
+                            setTimeout(()=>{
+                                
+                                document.querySelector('.front-face-turn').classList.remove('front-face-turn');
+                                document.querySelector('.back-face-turn').classList.remove('back-face-turn');
+                                
+                                document.querySelector('.front-face-turn').classList.remove('front-face-turn');
+                                document.querySelector('.back-face-turn').classList.remove('back-face-turn');
+        
+                                
+                                
+                            }, 1000);
+                        }
+            
                     }
+                    
                 }
-                
-            }
+
+                if (correctCards === (gameArray.length)/2) {
+                    setTimeout(gameEnd, 1500);
+                    
+                }
+            }    
         });
         
     });
 }
 
+function blockClicks() {
+    document.querySelector('.block-clicks').classList.remove('no-display');
+    setTimeout(() => {
+        document.querySelector('.block-clicks').classList.add('no-display');
+    }, 1500);
+}
 
+
+function gameEnd() {
+    alert(`
+    EN: Congratulations! 
+        You won with ${correctCards + wrongCards} moves in ${clock}
+
+    PORT: Parabéns!
+        Você ganhou com ${correctCards + wrongCards} jogadas em ${clock}
+
+    `);
+
+    clearInterval(timerInterval);
+    newGame();
+}
+
+function newGame() {
+    let newGameAnswer = prompt(`
+    EN: Would you like to play again?
+        Type "yes" or "no"
+
+    PORT: Gostaria de jogar novamente? 
+        Digite "sim" ou "não"
+    `)
+
+    if (newGameAnswer === 'yes' || newGameAnswer === 'sim') {
+        startGame();
+
+    } else if (newGameAnswer === 'no' || newGameAnswer ==='não') {
+        document.location.reload(true);
+    } else {
+        alert(`
+        EN: Invalid answer. Please type "yes" or "no"
+
+        PORT: Resposta inválidade. Por favor, digite "sim" ou "não"
+        `)
+        newGame();
+    }
+}
+
+function timer() {
+    let hh = 0;
+    let mm = 0;
+    let ss = 0;
+
+    let timer = document.querySelector('.clock');
+    timer.innerHTML = '';
+
+    timerInterval = setInterval(() => {
+        ss++;
+
+        if(ss === 60) {
+            ss = 0;
+            mm++;
+
+            if (mm === 60) {
+                mm = 0;
+                hh++;
+            }
+        }
+
+        clock = (hh < 10 ? `0${hh}` : hh) + ':' + (mm < 10 ? `0${mm}` : mm) + ':' + (ss < 10 ? `0${ss}` : ss);
+
+        timer.innerHTML = clock;
+
+    }, 1000);
+}
 
 
 
