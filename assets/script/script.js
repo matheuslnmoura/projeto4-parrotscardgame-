@@ -1,7 +1,3 @@
-
-
-
-
 let numberOfCards = null; 
 let gameArray = [];
 let cardsArray= [];
@@ -13,6 +9,7 @@ let clock = null;
 let timerInterval = null;
 let gameEndTimeEnglish = null;
 let gameEndTimePortuguese = null;
+let numberOfClicks = 0;
 
 document.querySelector('.start-button').addEventListener('click', startGame);
 
@@ -28,6 +25,7 @@ function startGame() {
     timerInterval = null;
     gameEndTimeEnglish = null;
     gameEndTimePortuguese = null;
+    numberOfClicks = 0;
 
     document.querySelector('section').innerHTML = "";
     document.querySelector('.start-button').classList.add('no-display');
@@ -74,7 +72,7 @@ function comparator() {
 }
 
 function createInterface() {
-    timer();
+    
 
     gameArray.map((item) => {
         let card = document.querySelector('.card').cloneNode(true);
@@ -104,7 +102,14 @@ function createInterface() {
 function cardSelection() {
     cardsArray.map((item) => {
         item.addEventListener("click", ()=>{
-            if(item.querySelector('.front-face').classList.contains('match-front') === false){
+            numberOfClicks++
+            if (numberOfClicks === 1) {
+                timer();
+            }
+            
+            if(item.querySelector('.front-face').classList.contains('match-front')){
+                // console.log('Essa carta já tem um par na tela');
+            } else {
                 if (cardVerification.length < 2) {
                     item.querySelector('.front-face').classList.add('front-face-turn');
                     item.querySelector('.back-face').classList.add('back-face-turn');
@@ -119,19 +124,22 @@ function cardSelection() {
                             document.querySelector('.front-face-turn').classList.replace('front-face-turn','match-front');
                             document.querySelector('.back-face-turn').classList.replace('back-face-turn', 'match-back');
                             
-                            if(document.querySelector('.front-face-turn') !== null){
-                                document.querySelector('.front-face-turn').classList.replace('front-face-turn','match-front');
-                                document.querySelector('.back-face-turn').classList.replace('back-face-turn', 'match-back');
-                            } else {
+                            if(document.querySelector('.front-face-turn') == null){
                                 item.querySelector('.match-front').classList.toggle('match-front');
                                 item.querySelector('.match-back').classList.toggle('match-back');
                                 correctCards--;
+
+                            } else {
+                                document.querySelector('.front-face-turn').classList.replace('front-face-turn','match-front');
+                                document.querySelector('.back-face-turn').classList.replace('back-face-turn', 'match-back');
+
+
                             }
                             console.log('Cartas Corretas ' + correctCards)
-                            cardVerification.splice(0,2);
+                            cardVerification = [];
                             
                         } else { 
-                            cardVerification.splice(0,2);
+                            cardVerification = [];
                             wrongCards++;
                             console.log('Jogadas Erradas ' + wrongCards);
                             setTimeout(()=>{
@@ -142,8 +150,6 @@ function cardSelection() {
                                 document.querySelector('.front-face-turn').classList.remove('front-face-turn');
                                 document.querySelector('.back-face-turn').classList.remove('back-face-turn');
         
-                                
-                                
                             }, 1000);
                         }
             
@@ -155,7 +161,7 @@ function cardSelection() {
                     setTimeout(gameEnd, 500);
                     
                 }
-            }    
+            }
         });
         
     });
@@ -172,10 +178,10 @@ function blockClicks() {
 function gameEnd() {
     alert(`
     EN: Congratulations! 
-        You won with ${correctCards + wrongCards} moves in ${gameEndTimeEnglish}
+        You won with ${(correctCards + wrongCards)*2} moves in ${gameEndTimeEnglish}
 
     PORT: Parabéns!
-        Você ganhou com ${correctCards + wrongCards} jogadas em ${gameEndTimePortuguese}
+        Você ganhou com ${(correctCards + wrongCards)*2} jogadas em ${gameEndTimePortuguese}
 
     `);
 
@@ -213,9 +219,10 @@ function timer() {
     let ss = 0;
 
     let timer = document.querySelector('.clock');
-    timer.innerHTML = '';
+    timer.innerHTML = '00:00:00';
 
     timerInterval = setInterval(() => {
+
         ss++;
 
         if(ss === 60) {
