@@ -186,6 +186,7 @@ function gameEnd() {
     `);
 
     clearInterval(timerInterval);
+    document.querySelector('.clock').innerHTML = '00:00:00';
     newGame();
 }
 
@@ -217,7 +218,7 @@ function timer() {
     let hh = 0;
     let mm = 0;
     let ss = 0;
-
+    
     let timer = document.querySelector('.clock');
     timer.innerHTML = '00:00:00';
 
